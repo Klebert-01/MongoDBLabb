@@ -3,6 +3,7 @@ using LayeredCRUDDemo.View;
 using MongoDB.Driver;
 using System;
 using System.Globalization;
+using MongoDBLabb.Controller;
 
 internal class dbController
 {
@@ -26,13 +27,10 @@ internal class dbController
         string newExpenseRetailer = io.GetInput();
 
         io.Print("Datum:\n(YYYY-MM-DD)");
-        DateTime.TryParseExact(io.GetInput(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime newExpenseDate);
+        DateTime.TryParse(io.GetInput(), out DateTime newExpenseDate);
         newExpenseDate = newExpenseDate.ToLocalTime();
 
         int newExpenseIndex = expenseDAO.ReadAll().Count() + 1; // newExpenseIndex = antal dokument i collection + 1
-
-        //expenseDAO.ReadAll().Where(document => newExpenseIndex == document.Index).Select(x => newExpenseIndex++); // samma som nedan med lambda
-
         foreach (var document in expenseDAO.ReadAll())  // om nytt index redan finns i collection -> newExpenseIndex + 1
         {
             if (newExpenseIndex == document.Index)
@@ -95,7 +93,7 @@ internal class dbController
                 string updatedExpenseRetailer = io.GetInput();
 
                 io.Print("Datum:\n(YYYY-MM-DD)");
-                DateTime.TryParseExact(io.GetInput(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime updatedExpenseDate);
+                DateTime.TryParse(io.GetInput(), out DateTime updatedExpenseDate);
                 updatedExpenseDate = updatedExpenseDate.ToLocalTime();
 
                 var updatedExpense = new ExpenseODM() { Product = updatedExpenseProduct, Price = updatedExpensePrice, Retailer = updatedExpenseRetailer, Date = updatedExpenseDate };

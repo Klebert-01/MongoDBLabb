@@ -13,5 +13,6 @@ namespace LayeredCRUDDemo.Model
         ExpenseODM ReadOne(int index);
         void UpdateOne(int id, ExpenseODM expense);
         void Delete(int id);
+
     }
 }

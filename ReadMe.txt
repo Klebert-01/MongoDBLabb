@@ -23,6 +23,11 @@
 
 - en "är du verkligen säker? J/N" vid uppdatering och delete [ ]
 
+- FUNTIONER LÄGG TILL
+	* sök efter namn som innehåller nyckelord/produkt
+	* sök mellan årtal (kanske behövs ToLocalTime där också)
+	* 
+
 --------------------------
 	BUGGAR / FELHANTERING
 --------------------------
@@ -30,3 +35,4 @@
 	* om tom input vid update ska det inte ändras till något [ ]
 	* finns det 282 dok i collection, tar bort document index 281, sen skapar en ny så får den också [/]
 	  indexnummer 282 eftersom att den går efter readall.count. måste sätta till senaste indexnr + 1 eller nåt
+

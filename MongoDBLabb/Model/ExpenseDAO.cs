@@ -4,7 +4,7 @@ using LayeredCRUDDemo.Model;
 /// <summary>
 /// här ska dom specifika CRUDmetoderna för mongo ligga, sen ska dom refereras till från controller?
 /// </summary>
-internal class ExpenseDAO : IExpenseDAO
+public class ExpenseDAO : IExpenseDAO
 {
     IMongoCollection<ExpenseODM> collection;
 
@@ -50,4 +50,6 @@ internal class ExpenseDAO : IExpenseDAO
         var deleteFilter = Builders<ExpenseODM>.Filter.Eq("index", index);
         this.collection.DeleteOne(deleteFilter);
     }
+
+
 }
