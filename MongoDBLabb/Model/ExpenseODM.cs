@@ -1,10 +1,7 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace LayeredCRUDDemo.Model;
-/// <summary>
-/// ODM object document mapper?
-/// </summary>
+namespace MongoDBLabb.Model;
+
 public class ExpenseODM
 {
     [BsonId]

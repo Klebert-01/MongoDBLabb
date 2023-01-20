@@ -1,8 +1,4 @@
-﻿using LayeredCRUDDemo.View;
-/// <summary>
-/// textio används vid konsoll input/output
-/// </summary>
-internal class TextIO : IUI 
+﻿internal class TextIO : IUI 
 {
 
     public void Clear()
@@ -23,5 +19,16 @@ internal class TextIO : IUI
     public void Print(string text)
     {
         Console.WriteLine(text);
+    }
+    public void PrintMenu()
+    {
+        Print("~~~~ExpenseManager5000~~~~\n" +
+                "Välj i menyn:\n" +
+                "[1] Visa alla utgifter\n" +
+                "[2] Filtrera efter indexnr(kanske mellan år sen)\n" +
+                "[3] Lägg till ny\n" +
+                "[4] Uppdatera befintlig\n" +
+                "[5] Radera utgift\n" +
+                "[6] Avsluta");
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace LayeredCRUDDemo.View;
+﻿namespace MongoDBLabb.View;
 
 internal interface IUI
 {
@@ -6,4 +6,5 @@ internal interface IUI
     public void Print(string text);
     public void Clear();
     public void Exit();
+    public void PrintMenu();
 }

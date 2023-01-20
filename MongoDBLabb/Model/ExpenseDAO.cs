@@ -1,10 +1,4 @@
-﻿using MongoDB.Driver;
-using MongoDB.Bson;
-using LayeredCRUDDemo.Model;
-/// <summary>
-/// här ska dom specifika CRUDmetoderna för mongo ligga, sen ska dom refereras till från controller?
-/// </summary>
-public class ExpenseDAO : IExpenseDAO
+﻿public class ExpenseDAO : IExpenseDAO
 {
     IMongoCollection<ExpenseODM> collection;
 
@@ -12,10 +6,10 @@ public class ExpenseDAO : IExpenseDAO
     {
         var client = new MongoClient(MongoURI);
         var database = client.GetDatabase(db);
-        this.collection = database.GetCollection<ExpenseODM>("expenses");  // gör så denna inte är hårdkodad. kanske ta emot namn på collection i ctor
+        this.collection = database.GetCollection<ExpenseODM>("expenses");
     }
 
-
+    // CRUD Metoder
     public void Create(ExpenseODM expense)
     {
 
@@ -28,7 +22,7 @@ public class ExpenseDAO : IExpenseDAO
     }
     public ExpenseODM ReadOne(int index)
     {
-        var readOneFilter = Builders<ExpenseODM>.Filter.Eq("index", index);     // borde den här vara bsondocument som param för builders?
+        var readOneFilter = Builders<ExpenseODM>.Filter.Eq("index", index);
         var result = this.collection.Find(readOneFilter).FirstOrDefault();
         return result;
     }
@@ -46,10 +40,7 @@ public class ExpenseDAO : IExpenseDAO
     }
     public void Delete(int index)
     {
-
         var deleteFilter = Builders<ExpenseODM>.Filter.Eq("index", index);
         this.collection.DeleteOne(deleteFilter);
     }
-
-
 }

@@ -1,11 +1,4 @@
-﻿using LayeredCRUDDemo.Model;
-using LayeredCRUDDemo.View;
-using MongoDB.Driver;
-using System;
-using System.Globalization;
-using MongoDBLabb.Controller;
-
-internal class dbController
+﻿internal class dbController
 {
     private IUI io;
     private IExpenseDAO expenseDAO;
@@ -17,90 +10,116 @@ internal class dbController
     }
     public void Create()
     {
-        io.Print("Ange produktnamn:");
-        string newExpenseProduct = io.GetInput();
-
-        io.Print("Pris:");
-        decimal.TryParse(io.GetInput(), out decimal newExpensePrice);
-
-        io.Print("Återförsäljare:");
-        string newExpenseRetailer = io.GetInput();
-
-        io.Print("Datum:\n(YYYY-MM-DD)");
-        DateTime.TryParse(io.GetInput(), out DateTime newExpenseDate);
-        newExpenseDate = newExpenseDate.ToLocalTime();
-
-        int newExpenseIndex = expenseDAO.ReadAll().Count() + 1; // newExpenseIndex = antal dokument i collection + 1
-        foreach (var document in expenseDAO.ReadAll())  // om nytt index redan finns i collection -> newExpenseIndex + 1
-        {
-            if (newExpenseIndex == document.Index)
-                newExpenseIndex++;
-        }
-
         try
         {
-            var newExpense = new ExpenseODM() { Product = newExpenseProduct, Price = newExpensePrice, Retailer = newExpenseRetailer, Date = newExpenseDate, Index = newExpenseIndex };
+            io.Print("Ange produktnamn:");
+            string newExpenseProduct = io.GetInput();   // tar emot produktnamn
 
-            expenseDAO.Create(newExpense);
+            io.Print("Pris:");
+            decimal.TryParse(io.GetInput(), out decimal newExpensePrice);   // tar emot pris
+
+            io.Print("Återförsäljare:");
+            string newExpenseRetailer = io.GetInput();  // tar emot återförsäljare
+
+            io.Print("Datum:\n(YYYY-MM-DD)");
+            DateTime.TryParse(io.GetInput(), out DateTime newExpenseDate);  // tar emot datum
+            newExpenseDate = newExpenseDate.ToLocalTime();
+
+            int newExpenseIndex = expenseDAO.ReadAll().Count() + 1; // skapar nytt indexnr, antal dokument i collection + 1
+            foreach (var document in expenseDAO.ReadAll())
+            {
+                if (newExpenseIndex == document.Index)  // om indexnr redan finns + 1
+                    newExpenseIndex++;
+            }
+
+            var newExpense = new ExpenseODM()   // skapar nytt ExpenseODM-objekt
+            {
+                Product = newExpenseProduct,
+                Price = newExpensePrice,
+                Retailer = newExpenseRetailer,
+                Date = newExpenseDate,
+                Index = newExpenseIndex
+            };
+
+            expenseDAO.Create(newExpense);  // kallar på createmetoden från ExpenseDAO med [newExpense] som parameter
+
             io.Print($"{newExpense.Product} med indexnr {newExpense.Index} tillagd!");
         }
-        catch (Exception ex)
+        catch (Exception ex)    // skriver ut exception och hoppar ur metoden om fel
         {
             io.Print($"gick ej att lägga till..\n{ex}");
             return;
         }
     }
+
     public void ReadAll()
     {
         string toShortDate;
-        foreach (var expense in expenseDAO.ReadAll())
+        foreach (var expense in expenseDAO.ReadAll())   // för varje dokument i kollektion
         {
             toShortDate = expense.Date.ToString().Remove(10);   // rensar bort tid osv från datetime
-            io.Print($"#{expense.Index} {expense.Product} {expense.Price} sek, Inköpt på {expense.Retailer} den {toShortDate}");
+            io.Print($"#{expense.Index} {expense.Product} {expense.Price} sek, Inköpt på {expense.Retailer} den {toShortDate}");    // skriver ut
         }
-        io.Print(""); // behövs bara i konsollversion
     }
     public void ReadOne()
     {
-        io.Print($"Ange indexnummer och tryck ENTER:");
-        int.TryParse(io.GetInput(), out int index);
-
-        if (index < 1 || index > expenseDAO.ReadAll().Count())
+        try
         {
+            io.Print($"Ange indexnummer och tryck ENTER:");
+            int.TryParse(io.GetInput(), out int index); // ta emot index användare vill söka på
+
+            foreach (var expense in expenseDAO.ReadAll())   // för varje dokument i kollektion
+            {
+                if (index == expense.Index)     // om användarinput matchar ett index i kollektionen
+                {
+                    var selectedExpense = expenseDAO.ReadOne(index);
+                    string selectedExpenseToShortDate = selectedExpense.Date.ToString().Remove(10);   // rensar bort tid osv från datetime
+                    io.Print($"#{selectedExpense.Index} {selectedExpense.Product} {selectedExpense.Price} sek, Inköpt på {selectedExpense.Retailer} den {selectedExpenseToShortDate}");
+                    return;
+                }
+
+            }
             io.Print($"No match\n");
             return;
         }
-        var selectedExpense = expenseDAO.ReadOne(index);
-        string selectedExpenseToShortDate = selectedExpense.Date.ToString().Remove(10);   // rensar bort tid osv från datetime
-        io.Print($"#{selectedExpense.Index} {selectedExpense.Product} {selectedExpense.Price} sek, Inköpt på {selectedExpense.Retailer} den {selectedExpenseToShortDate}");
+        catch (Exception ex)    // skriver ut exception och hoppar ur metoden om fel
+        {
+            io.Print($"error\n{ex}");
+        }
+
+
     }
     public void UpdateOne()
     {
         io.Print($"Ange indexnummer och tryck ENTER:");
-        int.TryParse(io.GetInput(), out int index);
+        int.TryParse(io.GetInput(), out int index); // ta emot index användare vill söka på
 
-        foreach (var document in expenseDAO.ReadAll())
+        foreach (var document in expenseDAO.ReadAll())  // för varje dokument i kollektion
         {
-            if (index == document.Index)
+            if (index == document.Index)    // om användarinput matchar ett index i kollektionen
             {
                 io.Print("Ange produktnamn:");
-                string updatedExpenseProduct = io.GetInput();
+                string updatedExpenseProduct = io.GetInput();  // tar emot uppdaterat produktnamn
 
                 io.Print("Pris:");
-                decimal.TryParse(io.GetInput(), out decimal updatedExpensePrice);
+                decimal.TryParse(io.GetInput(), out decimal updatedExpensePrice);   // tar emot uppdaterat pris
 
                 io.Print("Återförsäljare:");
-                string updatedExpenseRetailer = io.GetInput();
+                string updatedExpenseRetailer = io.GetInput();  // tar emot uppdaterad återförsäljare
 
                 io.Print("Datum:\n(YYYY-MM-DD)");
-                DateTime.TryParse(io.GetInput(), out DateTime updatedExpenseDate);
+                DateTime.TryParse(io.GetInput(), out DateTime updatedExpenseDate);  // tar emot uppdaterat datum
                 updatedExpenseDate = updatedExpenseDate.ToLocalTime();
 
-                var updatedExpense = new ExpenseODM() { Product = updatedExpenseProduct, Price = updatedExpensePrice, Retailer = updatedExpenseRetailer, Date = updatedExpenseDate };
+                var updatedExpense = new ExpenseODM()  // skapar nytt ExpenseODM objekt med ovan parametrar
+                {
+                    Product = updatedExpenseProduct, 
+                    Price = updatedExpensePrice, 
+                    Retailer = updatedExpenseRetailer, 
+                    Date = updatedExpenseDate };
 
-                expenseDAO.UpdateOne(index, updatedExpense);
+                expenseDAO.UpdateOne(index, updatedExpense);  // kallar på UpdateOne metoden från [ExpenseDAO] och sätter indexnr & nya objektet som parameter 
                 io.Print($"utgift uppdaterad!");
-
                 return;
             }
         }
@@ -109,11 +128,11 @@ internal class dbController
     public void DeleteOne()
     {
         io.Print($"Ange indexnummer och tryck ENTER:");
-        int.TryParse(io.GetInput(), out int index);
+        int.TryParse(io.GetInput(), out int index); // ta emot index användare vill söka på
 
-        foreach (var document in expenseDAO.ReadAll())
+        foreach (var document in expenseDAO.ReadAll())  // för varje dokument i kollektion
         {
-            if (index == document.Index)
+            if (index == document.Index)    // om användarinput matchar ett index i kollektionen
             {
                 var selectedExpense = expenseDAO.ReadOne(index);
                 io.Print($"Deleting {selectedExpense.Product} with index #{selectedExpense.Index}\n");
