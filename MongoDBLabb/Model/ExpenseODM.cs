@@ -11,7 +11,6 @@ public class ExpenseODM
     [BsonElement("pris")]
     public decimal? Price { get; set; }
     [BsonElement("retailer")]
-
     public string? Retailer { get; set; }
     [BsonElement("datum")]
     public DateTime? Date { get; set; }

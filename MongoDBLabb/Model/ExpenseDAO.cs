@@ -12,7 +12,6 @@
     // CRUD Metoder
     public void Create(ExpenseODM expense)
     {
-
         this.collection.InsertOne(expense);
     }
     public List<ExpenseODM> ReadAll()
