@@ -1,5 +1,5 @@
 ﻿IUI io = new TextIO();
-IExpenseDAO expenseDAO = new ExpenseDAO("djuphallen", "mongodb+srv://arvidbw:J5nzR5nz118!@cluster1.qjfqka6.mongodb.net/test");
+IExpenseDAO expenseDAO = new ExpenseDAO("djuphallen", "MONGODB CONNECTION STRING HÄR");
 dbController dbController = new dbController(io, expenseDAO);
 
 while (true)
